@@ -47,6 +47,7 @@ import com.example.otomaxposphotos.viewmodel.*
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -115,16 +116,22 @@ class MainActivity : AppCompatActivity(), PhotosListener {
         setSupportActionBar(toolbar)
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_baseline_close_24)
 
+
         val photosViewModel = ViewModelProvider(this).get(PhotosViewModel::class.java)
-        val searchPhotosViewModel = ViewModelProvider(this).get(SearchPhotosViewModel::class.java)
-        val filterPhotosViewModel = ViewModelProvider(this).get(FilterPhotosViewModel::class.java)
-        val categoriesPhotosViewModel = ViewModelProvider(this).get(CategoriesPhotosViewModel::class.java)
+        val searchPhotosViewModel =
+            ViewModelProvider(this).get(SearchPhotosViewModel::class.java)
+        val filterPhotosViewModel =
+            ViewModelProvider(this).get(FilterPhotosViewModel::class.java)
+        val categoriesPhotosViewModel =
+            ViewModelProvider(this).get(CategoriesPhotosViewModel::class.java)
         val ringPhotosViewModel = ViewModelProvider(this).get(RingPhotosViewModel::class.java)
         val lebarPhotosViewModel = ViewModelProvider(this).get(LebarPhotosViewModel::class.java)
         val etPhotosViewModel = ViewModelProvider(this).get(EtPhotosViewModel::class.java)
         val pcdPhotosViewModel = ViewModelProvider(this).get(PcdPhotosViewModel::class.java)
-        val ukuranbanPhotosViewModel = ViewModelProvider(this).get(UkuranbanPhotosViewModel::class.java)
-        val aksesorisPhotosViewModel = ViewModelProvider(this).get(AksesorisPhotosViewModel::class.java)
+        val ukuranbanPhotosViewModel =
+            ViewModelProvider(this).get(UkuranbanPhotosViewModel::class.java)
+        val aksesorisPhotosViewModel =
+            ViewModelProvider(this).get(AksesorisPhotosViewModel::class.java)
 
         photosAdapter = PhotosAdapter(this)
         val footerAdapter = PhotosLoadStateAdapter {
@@ -136,7 +143,7 @@ class MainActivity : AppCompatActivity(), PhotosListener {
         layoutManager.scrollToPositionWithOffset(0, 0)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return if (position == photosAdapter.itemCount  && footerAdapter.itemCount > 0) {
+                return if (position == photosAdapter.itemCount && footerAdapter.itemCount > 0) {
                     2
                 } else {
                     1
@@ -175,7 +182,8 @@ class MainActivity : AppCompatActivity(), PhotosListener {
                         }
                     }
                 } else if (s.isEmpty() && filterPhotos.isNotEmpty()) {
-                    val result = filterPhotos.filter { filter -> filter.isNotBlank() }.joinToString(", ")
+                    val result =
+                        filterPhotos.filter { filter -> filter.isNotBlank() }.joinToString(", ")
                     lifecycleScope.launch {
                         filterPhotosViewModel.getFilterPhotos(result).collectLatest { pagedData ->
                             photosAdapter.submitData(pagedData)
@@ -187,9 +195,10 @@ class MainActivity : AppCompatActivity(), PhotosListener {
                     }
                 } else if (s.isNotEmpty() && filterPhotos.isEmpty()) {
                     lifecycleScope.launch {
-                        searchPhotosViewModel.getSearchPhotos(s.toString(), null).collectLatest { pagedData ->
-                            photosAdapter.submitData(pagedData)
-                        }
+                        searchPhotosViewModel.getSearchPhotos(s.toString(), null)
+                            .collectLatest { pagedData ->
+                                photosAdapter.submitData(pagedData)
+                            }
                     }
                     lifecycleScope.launch {
                         photosAdapter.loadStateFlow.distinctUntilChangedBy {
@@ -210,7 +219,10 @@ class MainActivity : AppCompatActivity(), PhotosListener {
                     }
                 } else if (s.isNotEmpty() && filterPhotos.isNotEmpty()) {
                     lifecycleScope.launch {
-                        searchPhotosViewModel.getSearchPhotos(s.toString(), filterPhotos.filter { filter -> filter.isNotBlank() }.joinToString(", ")).collectLatest { pagedData ->
+                        searchPhotosViewModel.getSearchPhotos(
+                            s.toString(),
+                            filterPhotos.filter { filter -> filter.isNotBlank() }.joinToString(", ")
+                        ).collectLatest { pagedData ->
                             photosAdapter.submitData(pagedData)
                         }
                     }
@@ -306,7 +318,10 @@ class MainActivity : AppCompatActivity(), PhotosListener {
             filterPhotosName = ArrayList()
             if (search.text.toString().isNotBlank()) {
                 lifecycleScope.launch {
-                    searchPhotosViewModel.getSearchPhotos(search.text.toString(), filterPhotos.filter { filter -> filter.isNotBlank() }.joinToString(", ")).collectLatest { pagedData ->
+                    searchPhotosViewModel.getSearchPhotos(
+                        search.text.toString(),
+                        filterPhotos.filter { filter -> filter.isNotBlank() }.joinToString(", ")
+                    ).collectLatest { pagedData ->
                         photosAdapter.submitData(pagedData)
                         photosAdapter.setAllSelectedtoFalse()
                         buttonShare.visibility = View.GONE
@@ -339,8 +354,7 @@ class MainActivity : AppCompatActivity(), PhotosListener {
             val inflater = menuInflater
             if (it) {
                 inflater.inflate(R.menu.menu_two, menu)
-            }
-            else {
+            } else {
                 inflater.inflate(R.menu.menu_one, menu)
                 val menuCart = menu.findItem(R.id.cart)
                 val actionView = menuCart.actionView
@@ -348,7 +362,7 @@ class MainActivity : AppCompatActivity(), PhotosListener {
                 cartPhotosViewModel.totalPhotos.observe(this) {
                     if (it == 0L) {
                         textCartitemCount.visibility = View.GONE
-                    } else if (it > 999L){
+                    } else if (it > 999L) {
                         textCartitemCount.text = "999+"
                         textCartitemCount.visibility = View.VISIBLE
                     } else {
@@ -385,7 +399,8 @@ class MainActivity : AppCompatActivity(), PhotosListener {
                 imm?.hideSoftInputFromWindow(view.windowToken, 0)
             }
             val builder = AlertDialog.Builder(this)
-            val dialogView = LayoutInflater.from(this@MainActivity).inflate(R.layout.custom_dialog, null)
+            val dialogView =
+                LayoutInflater.from(this@MainActivity).inflate(R.layout.custom_dialog, null)
             builder.setView(dialogView)
             builder.setCancelable(true)
             builder.setIcon(R.mipmap.ic_launcher)
@@ -412,13 +427,16 @@ class MainActivity : AppCompatActivity(), PhotosListener {
                 aksesoris.second
             }
 
-            val spinnerKategori: AutoCompleteTextView = dialogView.findViewById(R.id.spinnerKategori)
+            val spinnerKategori: AutoCompleteTextView =
+                dialogView.findViewById(R.id.spinnerKategori)
             val spinnerRing: AutoCompleteTextView = dialogView.findViewById(R.id.spinnerRing)
             val spinnerLebar: AutoCompleteTextView = dialogView.findViewById(R.id.spinnerLebar)
             val spinnerEt: AutoCompleteTextView = dialogView.findViewById(R.id.spinnerEt)
             val spinnerPcd: AutoCompleteTextView = dialogView.findViewById(R.id.spinnerPcd)
-            val spinnerUkuranban: AutoCompleteTextView = dialogView.findViewById(R.id.spinnerUkuranban)
-            val spinnerAksesoris: AutoCompleteTextView = dialogView.findViewById(R.id.spinnerAksesoris)
+            val spinnerUkuranban: AutoCompleteTextView =
+                dialogView.findViewById(R.id.spinnerUkuranban)
+            val spinnerAksesoris: AutoCompleteTextView =
+                dialogView.findViewById(R.id.spinnerAksesoris)
 
             val adapterKategori = ArrayAdapter(this, R.layout.list_item_dialog, categoriesList)
             val adapterRing = ArrayAdapter(this, R.layout.list_item_dialog, ringList)
@@ -446,31 +464,40 @@ class MainActivity : AppCompatActivity(), PhotosListener {
             filterPhotos = ArrayList()
             filterPhotosName = ArrayList()
 
-            spinnerKategori.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
-                searchKategori = parent.getItemAtPosition(position).toString()
-            }
-            spinnerRing.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
-                searchRing = parent.getItemAtPosition(position).toString()
-            }
-            spinnerLebar.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
-                searchLebar = parent.getItemAtPosition(position).toString()
-            }
-            spinnerEt.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
-                searchEt = parent.getItemAtPosition(position).toString()
-            }
-            spinnerPcd.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
-                searchPcd = parent.getItemAtPosition(position).toString()
-            }
-            spinnerUkuranban.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
-                searchUkuranban = parent.getItemAtPosition(position).toString()
-            }
-            spinnerAksesoris.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
-                searchAksesoris = parent.getItemAtPosition(position).toString()
-            }
+            spinnerKategori.onItemClickListener =
+                AdapterView.OnItemClickListener { parent, _, position, _ ->
+                    searchKategori = parent.getItemAtPosition(position).toString()
+                }
+            spinnerRing.onItemClickListener =
+                AdapterView.OnItemClickListener { parent, _, position, _ ->
+                    searchRing = parent.getItemAtPosition(position).toString()
+                }
+            spinnerLebar.onItemClickListener =
+                AdapterView.OnItemClickListener { parent, _, position, _ ->
+                    searchLebar = parent.getItemAtPosition(position).toString()
+                }
+            spinnerEt.onItemClickListener =
+                AdapterView.OnItemClickListener { parent, _, position, _ ->
+                    searchEt = parent.getItemAtPosition(position).toString()
+                }
+            spinnerPcd.onItemClickListener =
+                AdapterView.OnItemClickListener { parent, _, position, _ ->
+                    searchPcd = parent.getItemAtPosition(position).toString()
+                }
+            spinnerUkuranban.onItemClickListener =
+                AdapterView.OnItemClickListener { parent, _, position, _ ->
+                    searchUkuranban = parent.getItemAtPosition(position).toString()
+                }
+            spinnerAksesoris.onItemClickListener =
+                AdapterView.OnItemClickListener { parent, _, position, _ ->
+                    searchAksesoris = parent.getItemAtPosition(position).toString()
+                }
 
             builder.setPositiveButton("yes") { dialog, _ ->
-                val searchPhotosViewModel = ViewModelProvider(this).get(SearchPhotosViewModel::class.java)
-                val filterPhotosViewModel = ViewModelProvider(this).get(FilterPhotosViewModel::class.java)
+                val searchPhotosViewModel =
+                    ViewModelProvider(this).get(SearchPhotosViewModel::class.java)
+                val filterPhotosViewModel =
+                    ViewModelProvider(this).get(FilterPhotosViewModel::class.java)
                 chipGroup.removeAllViews()
                 recyclerView.smoothScrollToPosition(0)
                 layoutManager.scrollToPositionWithOffset(0, 0)
@@ -537,7 +564,8 @@ class MainActivity : AppCompatActivity(), PhotosListener {
                     filterPhotosName.add(searchAksesoris)
                 }
 
-                val result = filterPhotos.filter { filter -> filter.isNotBlank() }.joinToString(", ")
+                val result =
+                    filterPhotos.filter { filter -> filter.isNotBlank() }.joinToString(", ")
                 val resultName = filterPhotosName.joinToString(", ")
 
                 if (search.text.toString().isBlank() && result.isNotBlank()) {
@@ -587,7 +615,10 @@ class MainActivity : AppCompatActivity(), PhotosListener {
                     }
 
                     lifecycleScope.launch {
-                        searchPhotosViewModel.getSearchPhotos(search.text.toString(), filterPhotos.filter { filter -> filter.isNotBlank() }.joinToString(", ")).collectLatest { pagedData ->
+                        searchPhotosViewModel.getSearchPhotos(
+                            search.text.toString(),
+                            filterPhotos.filter { filter -> filter.isNotBlank() }.joinToString(", ")
+                        ).collectLatest { pagedData ->
                             photosAdapter.submitData(pagedData)
                         }
                     }
@@ -630,7 +661,12 @@ class MainActivity : AppCompatActivity(), PhotosListener {
                 photosAdapter.loadStateFlow.distinctUntilChangedBy { data ->
                     data.refresh
                 }.collect {
-                    title.text = getString(R.string.image_choosed, photosAdapter.snapshot().items.filter { it.image.toString().isNotBlank() }.size)
+                    title.text = getString(
+                        R.string.image_choosed,
+                        photosAdapter.snapshot().items.filter {
+                            it.image.toString().isNotBlank()
+                        }.size
+                    )
                 }
             }
             true
@@ -652,7 +688,10 @@ class MainActivity : AppCompatActivity(), PhotosListener {
     }
 
     private fun checkPermission(): Boolean {
-        val permission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val permission = ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
 
         return permission == PackageManager.PERMISSION_GRANTED
     }
@@ -683,12 +722,17 @@ class MainActivity : AppCompatActivity(), PhotosListener {
             withContext(Dispatchers.IO) {
                 if (cartPhotosViewModel.getPhotosById(data.id).isNotEmpty()) {
                     Handler(Looper.getMainLooper()).postDelayed({
-                        Toast.makeText(applicationContext, "Data sudah ada", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "Data sudah ada", Toast.LENGTH_SHORT)
+                            .show()
                     }, 500)
                 } else {
                     cartPhotosViewModel.insertPhotos(data)
                     Handler(Looper.getMainLooper()).postDelayed({
-                        Toast.makeText(applicationContext, "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            applicationContext,
+                            "Data berhasil ditambahkan",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }, 500)
                 }
             }
@@ -701,17 +745,30 @@ class MainActivity : AppCompatActivity(), PhotosListener {
                 .asBitmap()
                 .load(filesPath[i].image)
                 .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             val values = ContentValues().apply {
-                                put(MediaStore.Images.Media.DISPLAY_NAME, System.currentTimeMillis().toString() + filesPath[i].name + ".jpeg")
-                                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + File.separator + "movie")
+                                put(
+                                    MediaStore.Images.Media.DISPLAY_NAME,
+                                    System.currentTimeMillis()
+                                        .toString() + filesPath[i].name + ".jpeg"
+                                )
+                                put(
+                                    MediaStore.Images.Media.RELATIVE_PATH,
+                                    Environment.DIRECTORY_PICTURES + File.separator + "movie"
+                                )
                                 put(MediaStore.Images.Media.MIME_TYPE, "image/*")
                                 put(MediaStore.Images.Media.IS_PENDING, 1)
                             }
 
                             val resolver = contentResolver
-                            val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+                            val uri = resolver.insert(
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                values
+                            )
                             val fos = uri?.let { resolver.openOutputStream(it) }
 
                             fos?.use {
@@ -733,10 +790,16 @@ class MainActivity : AppCompatActivity(), PhotosListener {
                                 resource.compress(Bitmap.CompressFormat.JPEG, 100, it)
                             }
                             uriList.add(
-                                FileProvider.getUriForFile(this@MainActivity, applicationContext.packageName + ".provider", File(
-                                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                                    System.currentTimeMillis().toString() + filesPath[i].name + ".jpeg"
-                            )))
+                                FileProvider.getUriForFile(
+                                    this@MainActivity,
+                                    applicationContext.packageName + ".provider",
+                                    File(
+                                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                                        System.currentTimeMillis()
+                                            .toString() + filesPath[i].name + ".jpeg"
+                                    )
+                                )
+                            )
                         }
                     }
 
@@ -761,88 +824,116 @@ class MainActivity : AppCompatActivity(), PhotosListener {
             }
 
             try {
-                resultLauncher.launch(Intent.createChooser(shareIntent, resources.getString(R.string.share_via)))
+                resultLauncher.launch(
+                    Intent.createChooser(
+                        shareIntent,
+                        resources.getString(R.string.share_via)
+                    )
+                )
             } catch (e: ActivityNotFoundException) {
                 Toast.makeText(this, "No App Available", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            recyclerView.visibility = View.VISIBLE
-            buttonShare.isEnabled = true
-            buttonShare.text = getString(R.string.share_image)
-            if (filterPhotos.isNotEmpty()) {
-                layoutChip.visibility = View.VISIBLE
-            }
+    private val resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                recyclerView.visibility = View.VISIBLE
+                buttonShare.isEnabled = true
+                buttonShare.text = getString(R.string.share_image)
+                if (filterPhotos.isNotEmpty()) {
+                    layoutChip.visibility = View.VISIBLE
+                }
 
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            search.visibility = View.VISIBLE
-            textViewLoading.visibility = View.GONE
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                uriList.clear()
-                lifecycleScope.launch {
-                    withContext(Dispatchers.IO) {
-                        return@withContext try {
-                            val c: Cursor? = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Images.Media.DISPLAY_NAME), null, null, null)
+                supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+                search.visibility = View.VISIBLE
+                textViewLoading.visibility = View.GONE
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    uriList.clear()
+                    lifecycleScope.launch {
+                        withContext(Dispatchers.IO) {
+                            return@withContext try {
+                                val c: Cursor? = contentResolver.query(
+                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                    arrayOf(MediaStore.Images.Media.DISPLAY_NAME),
+                                    null,
+                                    null,
+                                    null
+                                )
 
-                            while (c!!.moveToNext()) {
-                                val name: String = c.getString(c.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
-                                val resolver = contentResolver
-                                resolver.delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "_display_name=?", arrayOf(name))
+                                while (c!!.moveToNext()) {
+                                    val name: String =
+                                        c.getString(c.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
+                                    val resolver = contentResolver
+                                    resolver.delete(
+                                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                        "_display_name=?",
+                                        arrayOf(name)
+                                    )
+                                }
+
+                                c.close()
+                            } catch (e: Exception) {
+
                             }
-
-                            c.close()
-                        } catch (e: Exception) {
-
                         }
                     }
+                } else {
+                    for (i in uriList) {
+                        contentResolver.delete(i, null, null)
+                    }
+                    uriList.clear()
                 }
             } else {
-                for (i in uriList) {
-                    contentResolver.delete(i, null, null)
+                recyclerView.visibility = View.VISIBLE
+                buttonShare.isEnabled = true
+                buttonShare.text = getString(R.string.share_image)
+                if (filterPhotos.isNotEmpty()) {
+                    layoutChip.visibility = View.VISIBLE
                 }
-                uriList.clear()
-            }
-        } else {
-            recyclerView.visibility = View.VISIBLE
-            buttonShare.isEnabled = true
-            buttonShare.text = getString(R.string.share_image)
-            if (filterPhotos.isNotEmpty()) {
-                layoutChip.visibility = View.VISIBLE
-            }
 
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            textViewLoading.visibility = View.GONE
-            search.visibility = View.VISIBLE
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                uriList.clear()
-                lifecycleScope.launch {
-                    withContext(Dispatchers.IO) {
-                        return@withContext try {
-                            val c: Cursor? = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Images.Media.DISPLAY_NAME), null, null, null)
+                supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+                textViewLoading.visibility = View.GONE
+                search.visibility = View.VISIBLE
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    uriList.clear()
+                    lifecycleScope.launch {
+                        withContext(Dispatchers.IO) {
+                            return@withContext try {
+                                val c: Cursor? = contentResolver.query(
+                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                    arrayOf(MediaStore.Images.Media.DISPLAY_NAME),
+                                    null,
+                                    null,
+                                    null
+                                )
 
-                            while (c!!.moveToNext()) {
-                                val name: String = c.getString(c.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
-                                val resolver = contentResolver
-                                resolver.delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "_display_name=?", arrayOf(name))
+                                while (c!!.moveToNext()) {
+                                    val name: String =
+                                        c.getString(c.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
+                                    val resolver = contentResolver
+                                    resolver.delete(
+                                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                        "_display_name=?",
+                                        arrayOf(name)
+                                    )
+                                }
+
+                                c.close()
+                            } catch (e: Exception) {
+
                             }
-
-                            c.close()
-                        } catch (e: Exception) {
-
                         }
                     }
+                } else {
+                    for (i in uriList) {
+                        contentResolver.delete(i, null, null)
+                    }
+                    uriList.clear()
                 }
-            } else {
-                for (i in uriList) {
-                    contentResolver.delete(i, null, null)
-                }
-                uriList.clear()
             }
         }
-    }
 
     override fun onBackPressed() {
         if (doubleBackToExitPressedOnce) {

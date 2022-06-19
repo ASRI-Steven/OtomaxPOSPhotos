@@ -41,7 +41,7 @@ interface PhotosApiService {
     suspend fun getUkuranbanPhotos(): Photos
 
     @GET("aksesoris")
-    suspend fun getAksesorisPhotos(): Photos
+    suspend fun getAksesorisPhotos(): Response<Photos>
 
     companion object {
         private const val BASE_URL = Utils.BASE_URL

@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.otomaxposphotos.api.PhotosApiService
 import com.example.otomaxposphotos.model.Photos
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class AksesorisPhotosViewModel : ViewModel() {
 
@@ -19,7 +21,16 @@ class AksesorisPhotosViewModel : ViewModel() {
 
     fun getAksesorisPhotos() {
         viewModelScope.launch {
-            _aksesoris.value = PhotosApiService().getAksesorisPhotos()
+            val response = PhotosApiService().getAksesorisPhotos()
+            if (response.code() in 200..206) {
+                _aksesoris.value = response.body()
+            }else{
+                val exception = Exception("Response code fail : ${response.code()}")
+                val crashlytics = FirebaseCrashlytics.getInstance()
+                crashlytics.recordException(exception)
+
+                throw exception
+            }
         }
     }
 }
