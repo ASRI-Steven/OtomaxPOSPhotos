@@ -99,7 +99,6 @@ class MainActivity : AppCompatActivity(), PhotosListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         FirebaseAnalytics.getInstance(this)
-        throw RuntimeException("Test Crash")
 
         recyclerView = findViewById(R.id.recyclerView)
         buttonShare = findViewById(R.id.buttonShare)
