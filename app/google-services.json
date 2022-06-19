@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "123010371112",
+    "project_id": "otomaxpos",
+    "storage_bucket": "otomaxpos.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123010371112:android:70640f8a76358ac336af1d",
+        "android_client_info": {
+          "package_name": "com.example.otomaxposphotos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "123010371112-jgng8r71klhij5v4vrhg2lki73lqts8u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.otomaxposphotos",
+            "certificate_hash": "bcf5b45fb7cd8805efb7a15ac64b536fa8d28792"
+          }
+        },
+        {
+          "client_id": "123010371112-rkbeikjhcmtsgdad587b8es09cbfupsq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3ywT3KweXXIyHqdZnFlguSp-U_p3DEsk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "123010371112-rkbeikjhcmtsgdad587b8es09cbfupsq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

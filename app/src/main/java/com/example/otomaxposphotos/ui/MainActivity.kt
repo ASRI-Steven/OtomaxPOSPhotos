@@ -46,6 +46,7 @@ import com.example.otomaxposphotos.utils.PhotosListener
 import com.example.otomaxposphotos.viewmodel.*
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -54,6 +55,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.lang.RuntimeException
 
 class MainActivity : AppCompatActivity(), PhotosListener {
     private lateinit var recyclerView: RecyclerView
@@ -96,6 +98,8 @@ class MainActivity : AppCompatActivity(), PhotosListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        FirebaseAnalytics.getInstance(this)
+        throw RuntimeException("Test Crash")
 
         recyclerView = findViewById(R.id.recyclerView)
         buttonShare = findViewById(R.id.buttonShare)

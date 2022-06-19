@@ -5,6 +5,8 @@ import com.example.otomaxposphotos.model.Photos
 import com.example.otomaxposphotos.utils.Utils
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -48,9 +50,17 @@ interface PhotosApiService {
             .add(KotlinJsonAdapterFactory())
             .build()
 
+        val interceptor = HttpLoggingInterceptor().apply {
+            setLevel(HttpLoggingInterceptor.Level.BODY)
+        }
+
+        val client by lazy { OkHttpClient.Builder().addInterceptor(interceptor).build() }
+
+
         operator fun invoke(): PhotosApiService = Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .baseUrl(BASE_URL)
+            .client(client)
             .build()
             .create(PhotosApiService::class.java)
     }

@@ -22,6 +22,8 @@ import com.example.otomaxposphotos.utils.CartPhotosListener
 import com.example.otomaxposphotos.utils.Utils
 import com.example.otomaxposphotos.viewmodel.CartPhotosViewModel
 import com.example.otomaxposphotos.viewmodel.CartPhotosViewModelFactory
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
